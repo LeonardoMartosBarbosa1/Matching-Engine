@@ -14,6 +14,8 @@ Simply run the project and execute the `Main` class. Follow the Syntax below for
 
 - When an Order that changes the Best Side related to a Pegged Order is emitted and does not cross (so it rests), all Pegged Orders will have preference over this Limit Order.
 
+- Pegged Orders always maintain time preference among themselves.
+
 ### **Example**:
 <pre>
 limit buy 10 10
@@ -38,8 +40,6 @@ I  10 @ 30,00 | limit 3   |         |
 I  10 @ 10,00 | limit 0   |         |
 +-------------------------+---------+
 </pre>
-
-- Pegged Orders always maintain time preference among themselves.
 
 ## Order Command Parsing Rules
 
