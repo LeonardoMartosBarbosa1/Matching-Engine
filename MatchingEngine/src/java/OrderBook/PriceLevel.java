@@ -12,7 +12,7 @@ import java.util.EnumSet;
 
 public class PriceLevel implements OrderListener {
     private final Side side;
-    private final long price;
+    private final double price;
     private long sharesQuantity;
     private long ordersQuantity;
     private Order headOrder;
@@ -22,7 +22,7 @@ public class PriceLevel implements OrderListener {
 
     public final boolean isEmpty(){return this.ordersQuantity == 0;}
 
-    public final long getPrice(){return this.price;}
+    public final double getPrice(){return this.price;}
     public final long getSharesQuantity(){return this.sharesQuantity;}
     public final Side getSide(){return this.side;}
 
@@ -34,16 +34,16 @@ public class PriceLevel implements OrderListener {
     public final PriceLevel getPrevPriceLevel(){ return this.prevPriceLevel; }
     public final void setPrevPriceLevel(PriceLevel priceLevel ){ this.prevPriceLevel = priceLevel; }
 
-    public PriceLevel(Side side, long price){
+    public PriceLevel(Side side, double price){
         this.side = side;
         this.price = price;
     }
 
-    public boolean hasHigherPriority(Side side, long price){
+    public boolean hasHigherPriority(Side side, double price){
         return side == Side.BUY ? price >= this.price : price<= this.price;
     }
 
-    public boolean isPriceTradeable( long price ){
+    public boolean isPriceTradeable( double price ){
         return side==Side.BUY ? price<= this.price : price>= this.price;
     }
 
@@ -90,14 +90,14 @@ public class PriceLevel implements OrderListener {
     }
 
     @Override
-    public void onOrderExecuted( Order order, Instant lastExecuteTime, ExecutionSide executionSide, int executedShares, long executionPrice, long executionID, long matchId) {
+    public void onOrderExecuted( Order order, Instant lastExecuteTime, ExecutionSide executionSide, int executedShares, double executionPrice, long executionID, long matchId) {
         if(order.isFullyFiled())
             removeOrder(order);
         this.sharesQuantity -= executedShares;
     }
 
     @Override
-    public void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, long prevPrice) {
+    public void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, double prevPrice) {
         this.sharesQuantity -= prevQuantity;
         if(order.getPrice() != prevPrice){
             removeOrder(order);

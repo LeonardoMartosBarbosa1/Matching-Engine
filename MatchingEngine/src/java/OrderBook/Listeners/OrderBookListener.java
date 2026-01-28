@@ -16,8 +16,8 @@ public interface OrderBookListener {
     void onOrderAccepted(OrderBook orderBook, Order order, Instant acceptTime);
     void onOrderRejected(OrderBook orderBook, Order order, Instant rejectTime, EnumSet<RejectReason> rejectReasons);
     void onOrderRest(OrderBook orderBook, Order order, Instant restTime);
-    void onOrderExecuted(OrderBook orderBook, Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, long executionPrice, long executionID, long matchId);
+    void onOrderExecuted(OrderBook orderBook, Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, double executionPrice, long executionID, long matchId);
     void onOrderCancelRejected(OrderBook orderBook, Instant rejectTime, RejectReason rejectReason);
     void onOrderReplaceRejected(OrderBook orderBook, Instant rejectTime, RejectReason rejectReason);
-    void onOrderReplaceAccepted(OrderBook orderbook, Order order, Instant acceptTime, int prevQuantity, long prevPrice);
+    void onOrderReplaceAccepted(OrderBook orderbook, Order order, Instant acceptTime, int prevQuantity, double prevPrice);
 }

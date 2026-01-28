@@ -4,22 +4,22 @@ import common.OrderType;
 import common.Side;
 
 public class LimitOrder extends Order{
-    private long price;
+    private Double price;
 
-    public LimitOrder( Side side, String clientID, int quantity, long limitPrice){
+    public LimitOrder( Side side, String clientID, int quantity, Double limitPrice){
         super(OrderType.LIMIT, side, clientID, quantity);
         this.price = limitPrice;
     }
 
     @Override
-    public final Long getPrice(){
+    public final Double getPrice(){
         return price;
     }
 
     @Override
-    public void update(Integer quantity, Long newPrice) {
+    public void update(Integer quantity, Double newPrice) {
         int prevQuantity = pendingQuantity;
-        long prevPrice = price;
+        double prevPrice = price;
 
         if(quantity != null)
             pendingQuantity = quantity;
