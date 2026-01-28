@@ -15,15 +15,15 @@ import static common.UserRequestType.*;
             example: market buy 150
 
     CREATE_LIMIT_ORDER:
-            limit [side] [price] [quantity]
-            example: limit buy 10 100
+            limit [side] [quantity] [price]
+            example: limit buy 100 10
 
     CREATE_PEGGED_ORDER:
             pegged [pegtype] [quantity]
             example: pegged bid 150
 
     CANCEL_ORDER:
-            cancel order [orderID]
+            cancel [orderID]
             example: cancel 2
 
     SHOW_ORDER_BOOK: show
@@ -56,15 +56,19 @@ public class PromptParser {
         String command = tokens[0];
 
         UserRequestType userRequestType = PromptParser.userRequestTypeFromCommand(command);
-        return switch (userRequestType) {
-            case CREATE_MARKET_ORDER -> parseMarket(tokens);
-            case CREATE_LIMIT_ORDER -> parseLimit(tokens);
-            case CREATE_PEGGED_ORDER -> parsePegged(tokens);
-            case CANCEL_ORDER -> parseCancel(tokens);
-            case REPLACE_ORDER -> parseReplace(tokens);
-            case SHOW_ORDER_BOOK -> parseShowOrderBook(tokens);
-            case INVALID -> new InvalidUserRequest();
-        };
+        try{
+            return switch (userRequestType) {
+                case CREATE_MARKET_ORDER -> parseMarket(tokens);
+                case CREATE_LIMIT_ORDER -> parseLimit(tokens);
+                case CREATE_PEGGED_ORDER -> parsePegged(tokens);
+                case CANCEL_ORDER -> parseCancel(tokens);
+                case REPLACE_ORDER -> parseReplace(tokens);
+                case SHOW_ORDER_BOOK -> parseShowOrderBook(tokens);
+                case INVALID -> new InvalidUserRequest();
+            };
+        } catch (Exception e) {
+            return new InvalidUserRequest();
+        }
     }
     private UserRequest parseMarket(String[] tokens){
         if(tokens.length != 4)
@@ -105,8 +109,8 @@ public class PromptParser {
     }
 
     private UserRequest parseCancel(String[] tokens){
-        if(tokens.length != 4)return new InvalidUserRequest();
-        return new CancelOrderRequest(Integer.parseInt(tokens[2]));
+        if(tokens.length != 3)return new InvalidUserRequest();
+        return new CancelOrderRequest(Integer.parseInt(tokens[1]));
     }
 
     private UserRequest parseShowOrderBook(String[] tokens){
