@@ -12,7 +12,7 @@ Simply run the project and execute the `Main` class. Follow the Syntax below for
 
 - Pegged Orders, when arriving at first time in the Order Book will have their price replaced to match the best available size-related price, but will have time preference over other orders at the same Price Level.
 
-- When an Order that changes the Best Side related to a Pegged Order is emitted and does not cross (so it rests), all Pegged Orders will have preference over this Limit Order.
+- When an Order that changes the Best Side related to a Pegged Order is emitted and does not cross (so it rests), all Pegged Orders will have preference over this Limit Order. if a Limit Order doesnt change Best Price and is added to the PriceLevel, it will have time preference over the pegged orders
 
 - Pegged Orders always maintain time preference among themselves.
 
