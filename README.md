@@ -3,6 +3,44 @@
 
 Simply run the project and execute the `Main` class. Follow the Syntax below for inputs
 
+## Pegged and Limit Preference Logic
+- Every Accepted Order has an OrderID associated with it.
+
+- Limit Orders whose price crosses the bid/offer will act as a Market Order — meaning they will not rest in the book.
+
+- Only Orders that rest in the Order Book affect the Price Levels.
+
+- Pegged Orders, when arriving at first time in the Order Book will have their price replaced to match the best available size-related price, but will have time preference over other orders at the same Price Level.
+
+- When an Order that changes the Best Side related to a Pegged Order is emitted and does not cross (so it rests), all Pegged Orders will have preference over this Limit Order.
+
+### **Example**:
+<pre>
+limit buy 10 10
+pegged bid 20
+pegged bid 30
++-------------------------+---------+
+I  BID                    |  OFFER  |
++-------------------------+---------+
+I  10 @ 10,00 | limit 0   |         |
+I  20 @ 10,00 | pegged 1  |         |
+I  30 @ 10,00 | pegged 2  |         |
++-------------------------+---------+
+
+limit buy 10 30
+
++-------------------------+---------+
+I  BID                    |  OFFER  |
++-------------------------+---------+
+I  20 @ 30,00 | pegged 1  |         |
+I  30 @ 30,00 | pegged 2  |         |
+I  10 @ 30,00 | limit 3   |         |
+I  10 @ 10,00 | limit 0   |         |
++-------------------------+---------+
+</pre>
+
+- Pegged Orders always maintain time preference among themselves.
+
 ## Order Command Parsing Rules
 
 
