@@ -16,7 +16,6 @@ public class Main {
             String input = scanner.nextLine();
 
             if(Objects.equals(input, "break")) break;
-            //We just add a Randon CLient
             orderBook.executeUserInput(input + " client");
         }
     }

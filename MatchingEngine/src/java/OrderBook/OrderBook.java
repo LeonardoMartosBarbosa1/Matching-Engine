@@ -280,7 +280,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
             case REPLACE_ORDER -> replaceOrder((ReplaceOrderRequest) userRequest);
             case CANCEL_ORDER -> cancelOrder((CancelOrderRequest) userRequest);
             case SHOW_ORDER_BOOK -> printOrderBook();
-            case INVALID -> invalidateParsing(userInputRequest);
+            default -> invalidateParsing(userInputRequest);
         }
     }
 
