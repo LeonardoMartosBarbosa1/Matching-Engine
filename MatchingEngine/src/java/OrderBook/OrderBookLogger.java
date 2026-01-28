@@ -50,10 +50,10 @@ public class OrderBookLogger implements OrderBookListener {
     public void onOrderRest(OrderBook orderBook, Order order, Instant restTime) {}
 
     @Override
-    public void onOrderExecuted(OrderBook orderBook, Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesExecuted, long executionPrice, long executionID, long matchID) {
+    public void onOrderExecuted(OrderBook orderBook, Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesExecuted, double executionPrice, long executionID, long matchID) {
         if(!this.isOn) return;
-        System.out.printf("[ ORDER | orderID=%s, executionID=%s, matchID=%s, orderStatus=%s, executionSide=%s, executionQuantity=%s, executionPrice=%s ]",
-                order.getOrderID(), executionID, matchID, order.getOrderStatus(), executionSide.getValueName(), sharesExecuted, executionPrice );
+        System.out.printf("[ ORDER | orderID=%s, orderStatus=%s, executionID=%s, matchID=%s, executionSide=%s, executionQuantity=%s, executionPrice=%s ]",
+                order.getOrderID(), order.getOrderStatus(), executionID, matchID, executionSide.getValueName(), sharesExecuted, executionPrice );
         System.out.println();
     }
 
@@ -72,9 +72,9 @@ public class OrderBookLogger implements OrderBookListener {
     }
 
     @Override
-    public void onOrderReplaceAccepted(OrderBook orderbook, Order order, Instant acceptTime, int prevQuantity, long prevPrice) {
+    public void onOrderReplaceAccepted(OrderBook orderbook, Order order, Instant acceptTime, int prevQuantity, double prevPrice) {
         if(!this.isOn) return;
-        System.out.printf("[ ORDER | orderID=%s, request=%s, acceptTime=%s, previousPrice=%d, currentPrice=%d, previousPendingQuantity=%d, currentPendingQuantity=%d ]",
+        System.out.printf("[ ORDER | orderID=%s, request=%s, acceptTime=%s, previousPrice=%.2f, currentPrice=%.2f, previousPendingQuantity=%d, currentPendingQuantity=%d ]",
                             order.getOrderID(), REPLACE_ORDER.getValueName(), acceptTime, prevPrice, order.getPrice(), prevQuantity, order.getPendingQuantity() );
         System.out.println();
     }

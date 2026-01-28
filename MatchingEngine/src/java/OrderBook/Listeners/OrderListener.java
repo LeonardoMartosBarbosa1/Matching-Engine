@@ -13,7 +13,7 @@ public interface OrderListener {
     void onOrderRejected(Order order, Instant rejectTime, EnumSet<RejectReason> rejectReasons);
     void onOrderCancelled(Order order, Instant cancelTime, CancelReason cancelReason);
     void onOrderRest(Order order, Instant restTime);
-    void onOrderExecuted(Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, long executionPrice, long executionID, long matchId);
+    void onOrderExecuted(Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, double executionPrice, long executionID, long matchId);
     void onOrderReplaceRejected(Order order, Instant rejectTime, RejectReason rejectReason);
-    void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, long prevPrice);
+    void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, double prevPrice);
 }

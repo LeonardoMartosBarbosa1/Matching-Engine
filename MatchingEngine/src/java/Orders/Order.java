@@ -71,7 +71,7 @@ public abstract class Order {
     public final Instant getLastRestTime(){return this.lastRestTime;}
     public final Instant getLastExecuteTime(){return this.lastExecuteTime;}
 
-    abstract public Long getPrice();
+    abstract public Double getPrice();
     public final int getFilledQuantity(){
         return this.filledQuantity;
     }
@@ -93,7 +93,7 @@ public abstract class Order {
         orderBook.unRegisterOrders(this);
     }
 
-    public abstract void update(Integer quantity, Long price);
+    public abstract void update(Integer quantity, Double price);
 
     public void reject(EnumSet<RejectReason> rejectReasons){
         this.rejectTime = Instant.now();
@@ -135,7 +135,7 @@ public abstract class Order {
         }
     }
 
-    public void execute(long executionPrice, ExecutionSide executionSide, int sharesToExecute, long executionID, long matchId, Instant executionTime ){
+    public void execute(double executionPrice, ExecutionSide executionSide, int sharesToExecute, long executionID, long matchId, Instant executionTime ){
         setOrderStatus( pendingQuantity > sharesToExecute? OrderStatus.PARTIAL_FILLED : OrderStatus.FILLED );
         int executedShares = Math.min(getPendingQuantity(), sharesToExecute);
 
@@ -156,7 +156,7 @@ public abstract class Order {
         }
     }
 
-    public void acceptReplace(int prevQuantity, long prevPrice){
+    public void acceptReplace(int prevQuantity, double prevPrice){
         int x = listeners.size();
         for(int i = x - 1; i >= 0; i--) {
             listeners.get(i).onOrderReplaceAccepted(this, Instant.now(), prevQuantity, prevPrice );

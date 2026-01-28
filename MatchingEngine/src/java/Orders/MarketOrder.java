@@ -9,10 +9,10 @@ public class MarketOrder extends Order {
     }
 
     @Override
-    public final Long getPrice(){
+    public final Double getPrice(){
         return null;
     }
 
     @Override
-    public void update(Integer quantity, Long price) {}
+    public void update(Integer quantity, Double price) {}
 }

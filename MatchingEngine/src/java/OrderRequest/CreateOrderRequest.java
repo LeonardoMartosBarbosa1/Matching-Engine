@@ -10,14 +10,14 @@ public class CreateOrderRequest extends UserRequest {
     private final OrderType orderType;
     private final Side side;
     private final int quantity;
-    private final Long price;
+    private final Double price;
     private final PegType pegType;
     private final String clientID;
 
     public CreateOrderRequest(UserRequestType userRequestType,
                               Side side,
                               int quantity,
-                              Long price,
+                              Double price,
                               PegType pegType,
                               String clientID
     ) {
@@ -37,7 +37,7 @@ public class CreateOrderRequest extends UserRequest {
 
     public Side getSide(){ return this.side;}
     public int getQuantity(){ return this.quantity;}
-    public Long getPrice(){ return this.price; }
+    public Double getPrice(){ return this.price; }
     public PegType getPegType(){ return this.pegType; }
     public OrderType getOderType() { return this.orderType; }
     public String getClientID(){ return this.clientID; }

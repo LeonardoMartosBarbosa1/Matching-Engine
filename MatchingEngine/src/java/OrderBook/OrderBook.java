@@ -22,7 +22,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
     private long orderID = 0;
     private long execID = 0;
     private long matchID = 0;
-    private long lastExecutedPrice;
+    private double lastExecutedPrice;
     private final String asset;
     private final OrderBookLogger orderBookLogger;
     private final PromptParser userPromptParser;
@@ -31,11 +31,11 @@ public class OrderBook implements OrderListener, OrderRegistry{
     private final Map<Side, PriceLevel> headPriceLevel = new HashMap<>();
     private final Map<Side, PriceLevel> tailPriceLevel = new HashMap<>();
     private final Map<PegType, PeggedOrders> peggedOrders = new HashMap<>();
-    private final Map<Side, Map<Long, PriceLevel>> pricingLevelMap = new HashMap<>();
+    private final Map<Side, Map<Double, PriceLevel>> pricingLevelMap = new HashMap<>();
     private boolean isPeggedUpdating;
 
     //Market Data Feed Utility
-    public long getLastExecutedPrice(){return this.lastExecutedPrice;}
+    public double getLastExecutedPrice(){return this.lastExecutedPrice;}
     private void setUpdatePeggedSuppression(boolean isPeggedUpdating ){this.isPeggedUpdating = isPeggedUpdating;}
     private boolean isPeggedUpdateSuppressed(){return this.isPeggedUpdating;}
 
@@ -72,20 +72,20 @@ public class OrderBook implements OrderListener, OrderRegistry{
         return priceLevel != null && priceLevel.getHeadOrder()!= null;
     }
 
-    public final Long getBestBidPrice(){
+    public final Double getBestBidPrice(){
         return hasBids() ? headPriceLevel.get(Side.BUY).getHeadOrder().getPrice() : null;
     }
 
-    public final Long getBestAskPrice(){
+    public final Double getBestAskPrice(){
         return hasAsks() ? headPriceLevel.get(Side.SELL).getHeadOrder().getPrice() : null;
     }
 
-    public final Long getBestPrice(Side side){
+    public final Double getBestPrice(Side side){
         return side == Side.BUY ? getBestBidPrice() : getBestAskPrice();
     }
 
-    public final boolean isOrderPriceBest(Side side, long price){
-        Long best = getBestPrice(side);
+    public final boolean isOrderPriceBest(Side side, double price){
+        Double best = getBestPrice(side);
         if (best == null)
             return true;
         return side==Side.BUY ? price > best : price < best;
@@ -119,7 +119,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
             if( !isMarketOrder && !priceLevel.isPriceTradeable(order.getPrice()) ) break;
             for(Order againstOrder = priceLevel.getHeadOrder(); againstOrder != null; againstOrder = againstOrder.getNextOrder()){
                 int quantityToExecute = Math.min(order.getPendingQuantity(), againstOrder.getPendingQuantity());
-                long executionPrice = againstOrder.getPrice();
+                double executionPrice = againstOrder.getPrice();
                 this.lastExecutedPrice = executionPrice;
                 Instant executionTime = Instant.now();
                 long matchID = this.matchID++;
@@ -134,7 +134,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
     //that new created PricingLevels are more likely to be near the top
     //of the book making the Average Cost lower than some Trees. So
     //I Will take a heuristical approach
-    private PriceLevel findPriceLevel(Side side, long price){
+    private PriceLevel findPriceLevel(Side side, double price){
         if( this.pricingLevelMap.get(side).containsKey(price))
             return pricingLevelMap.get(side).get(price);
 
@@ -183,7 +183,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
         order.rest();
     }
 
-    private void updatePeggedOrders(Side side, long price){
+    private void updatePeggedOrders(Side side, double price){
         setUpdatePeggedSuppression(true);
         PegType pegType = Side.pegTypeFromSide(side);
         for(PeggedOrder pegOrder = peggedOrders.get(pegType).getHeadOrder(); pegOrder!= null; pegOrder = pegOrder.getNextPeggedOrder()){
@@ -200,9 +200,9 @@ public class OrderBook implements OrderListener, OrderRegistry{
 
         if(userRequest.getOderType() == OrderType.PEGGED){
             switch(userRequest.getPegType()){
-                case INVALID: rejectReasons.add(RejectReason.WRONG_PEGTYPE);
-                case ASK: if(!this.hasAsks()){rejectReasons.add(RejectReason.NO_ASK_TO_PEG);}
-                case BID: if(!this.hasBids()){rejectReasons.add(RejectReason.NO_BID_TO_PEG);}
+                case INVALID: rejectReasons.add(RejectReason.WRONG_PEGTYPE); break;
+                case ASK: if(!this.hasAsks()){rejectReasons.add(RejectReason.NO_ASK_TO_PEG);} break;
+                case BID: if(!this.hasBids()){rejectReasons.add(RejectReason.NO_BID_TO_PEG);} break;
             }
         }
         return rejectReasons;
@@ -287,7 +287,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
     private int setLines(PriceLevel sell, List<String> sellStrings, int sellColumnWidth) {
         for(PriceLevel priceLevel = sell; priceLevel!= null; priceLevel = priceLevel.getNextPriceLevel()){
             for(Order order = priceLevel.getHeadOrder(); order != null; order = order.getNextOrder()){
-                String line = String.format( "%d @ %d | %s %d", order.getPendingQuantity(),
+                String line = String.format( "%d @ %.2f | %s %d", order.getPendingQuantity(),
                         order.getPrice(), order.getOrderType().getValueName(), order.getOrderID());
                 sellStrings.add(line);
                 sellColumnWidth = Math.max(sellColumnWidth, line.length());
@@ -381,7 +381,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
     }
 
     @Override
-    public void onOrderExecuted(Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, long executionPrice, long executionID, long matchId) {
+    public void onOrderExecuted(Order order, Instant lastExecuteTime, ExecutionSide executionSide, int sharesToExecute, double executionPrice, long executionID, long matchId) {
         if(order.isFullyFiled())
             removeOrderFromOrderBook(order);
 
@@ -391,7 +391,7 @@ public class OrderBook implements OrderListener, OrderRegistry{
     }
 
     @Override
-    public void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, long prevPrice) {
+    public void onOrderReplaceAccepted(Order order, Instant acceptTime, int prevQuantity, double prevPrice) {
         for (OrderBookListener listener : listeners) {
             listener.onOrderReplaceAccepted(this, order, acceptTime, prevQuantity, prevPrice);
         }

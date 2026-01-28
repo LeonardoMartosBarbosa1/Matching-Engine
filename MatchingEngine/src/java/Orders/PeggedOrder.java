@@ -9,18 +9,18 @@ import common.Side;
 //Pegged Orders as
 public class PeggedOrder extends Order {
     private final PegType pegType;
-    private long price;
+    private Double price;
     private PeggedOrder nextPeggedOrder;
     private PeggedOrder prevPeggedOrder;
 
-    public PeggedOrder(Side side, String clientID, int quantity, PegType pegType, long price){
+    public PeggedOrder(Side side, String clientID, int quantity, PegType pegType, Double price){
         super(OrderType.PEGGED, side, clientID, quantity);
         this.pegType = pegType;
         this.price = price;
     }
 
     @Override
-    public final Long getPrice(){
+    public final Double getPrice(){
         return this.price;
     }
     public final PegType getPegType(){return this.pegType;}
@@ -34,7 +34,7 @@ public class PeggedOrder extends Order {
     public final PeggedOrder getPrevPeggedOrder(){return this.prevPeggedOrder;}
 
     @Override
-    public void update(Integer quantity, Long price) {
+    public void update(Integer quantity, Double price) {
         if (price != null){
             rejectReplace(RejectReason.PEGGED_USER_PRICE_REPLACE);
             return;
@@ -47,8 +47,8 @@ public class PeggedOrder extends Order {
     }
 
     //Price Update Due to the definition of Pegged Order and not a user Request
-    public void updatePricePegged(long price){
-        long prevPrice = this.price;
+    public void updatePricePegged(double price){
+        double prevPrice = this.price;
         this.price = price;
         acceptReplace(this.getPendingQuantity(), prevPrice);
     }

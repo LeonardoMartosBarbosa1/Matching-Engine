@@ -28,7 +28,14 @@ import static common.UserRequestType.*;
 
     SHOW_ORDER_BOOK: show
 
-    REPLACE_ORDER: replace [orderID] [quantity] [price]
+    REPLACE_ORDER:
+            replace [orderID] [quantity] [price]
+            example: 12 100 20
+
+    OBS* In case you don't want to replace quantity or price just use - like below:
+         11 - 10 -> on orderID 11 change price to 10.
+         11 10 - -> pm orderID 11 change quantity yo 10
+
  */
 
 public class PromptParser {
@@ -78,7 +85,7 @@ public class PromptParser {
         return(new CreateOrderRequest(CREATE_LIMIT_ORDER,
                 Side.fromString(tokens[1]),
                 Integer.parseInt(tokens[2]),
-                Long.parseLong(tokens[3]),
+                Double.parseDouble(tokens[3]),
                 null,
                 tokens[4]));
     }
@@ -111,7 +118,7 @@ public class PromptParser {
         if(tokens.length != 5)return new InvalidUserRequest();
         Long orderID = Long.parseLong(tokens[1]);
         Integer quantity = Objects.equals(tokens[2], "-") ? null : Integer.parseInt(tokens[2]);
-        Long price = Objects.equals(tokens[3], "-") ? null : Long.parseLong(tokens[3]);
+        Double price = Objects.equals(tokens[3], "-") ? null : Double.parseDouble(tokens[3]);
         return new ReplaceOrderRequest(orderID, quantity, price);
     }
 }
