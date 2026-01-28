@@ -32,7 +32,7 @@ Creates a pegged order that tracks the specified reference price (`bid` or `ask`
 
 ## 📌 Cancel Order
 
-***Syntax*** `cancel [orderID] [quantity]`
+***Syntax*** `cancel [orderID]`
  
 Cancels an existing order using its unique identifier.
 
