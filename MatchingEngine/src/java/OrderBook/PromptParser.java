@@ -23,7 +23,7 @@ import static common.UserRequestType.*;
             example: pegged bid 150
 
     CANCEL_ORDER:
-            cancel order [orderID]
+            cancel [orderID]
             example: cancel 2
 
     SHOW_ORDER_BOOK: show
